@@ -1,35 +1,18 @@
+
 name: Manual Regression Trigger
 on:
-    issue_comment:
-        types: [created]
+  issue_comment:
+    types: [created]
 
 jobs:
-  respond:
+  prepare:
     runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
     steps:
-      - name: Get Pull Request Number
-        id: get-pr-number
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            const issue = context.payload.issue
-            const pullRequest = await github.rest.pulls.get({
-              ...context.repo,
-              pull_number: issue.number,
-            })
-            const prNumber = pullRequest.data.number
-            core.setOutput('pr-number', prNumber)
-
-      - name: Check Comment and Respond
-        env:
-          PR_NUMBER: ${{ steps.get-pr-number.outputs.pr-number }}
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: pr
         run: |
-          COMMENT="${{ github.event.comment.body }}"
-          if [[ $COMMENT == *"/regression"* ]]; then
-            echo "Regression comment on Pull Request #$PR_NUMBER"
-            # Additional actions or commands for regression comment
-          else
-            echo "Non-regression comment on Pull Request #$PR_NUMBER"
-            # Additional actions or commands for non-regression comments
-          fi
+          echo "NAME_SUFFIX=-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "NAMESPACE=pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo $NAMESPACE
