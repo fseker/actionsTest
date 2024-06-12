@@ -11,6 +11,7 @@ jobs:
         id: get-pr-number
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue = context.payload.issue
             const pullRequest = await github.rest.pulls.get({
