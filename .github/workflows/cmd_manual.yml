@@ -13,7 +13,7 @@ jobs:
         with:
           script: |
             const issue = context.payload.issue
-            const pullRequest = await github.rest.repos.getPullRequest({
+            const pullRequest = await github.rest.pulls.get({
               ...context.repo,
               pull_number: issue.number,
             })
