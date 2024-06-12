@@ -1,4 +1,4 @@
-name: Automatic e2e Regression Trigger
+name: Manual Regression Trigger
 on:
     issue_comment:
         types: [created]
