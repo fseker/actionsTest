@@ -10,8 +10,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: pr
-        run: |
-          echo "NAME_SUFFIX=-${{ github.event.issue.number }}" >> $GITHUB_ENV
-          echo "NAMESPACE=pr-${{ github.event.issue.number }}" >> $GITHUB_ENV
-          echo ${{ env.NAMESPACE }}
+        with:
+            fetch-depth: 0
+            ref: ${{ inputs.ref }}
+  
+  end-to-end-tests:
+        uses: ./.github/workflows/e2e.yaml
+        with:
+            ref: refs/pull/${{ github.event.issue.number }}/head
