@@ -23,9 +23,13 @@ jobs:
           run: echo "${{ steps.pr_details.outputs.head.ref }}"
           fetch-depth: 0
 
+      - id: Print branch name
+        run: |
+          echo "${{ steps.pr_details.outputs.head.ref }}" >> $GITHUB_OUTPUT
+
 
   end-to-end-tests:
-        needs: [prepare]
-        uses: ./.github/workflows/e2e.yaml
-        with:
-            ref: refs/pull/${{ github.event.issue.number }}/merge
+    needs: [prepare]
+    uses: ./.github/workflows/e2e.yaml
+    with:
+      ref: refs/pull/${{ github.event.issue.number }}/merge
