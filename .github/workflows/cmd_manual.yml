@@ -8,23 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
     steps:
-      - name: Get PR details
+      - name: get pr details
         id: pr_details
         run: |
           PR_DATA=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                         -H "Accept: application/vnd.github.v3+json" \
-                         https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+                       -H "Accept: application/vnd.github.v3+json" \
+                       https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+          echo "branch=$(echo $PR_DATA | jq -r .head.ref)" >> $GITHUB_OUTPUT
+          echo "repo=$(echo $PR_DATA | jq -r .head.repo.full_name)" >> $GITHUB_OUTPUT
 
-      - name: Checkout PR branch
+      - name: Checkout pr branch
         uses: actions/checkout@v4
         with:
           repository: ${{ steps.pr_details.outputs.repo }}
-          ref: ${{ steps.pr_details.outputs.head.ref }}
+          ref: ${{ steps.pr_details.outputs.branch }}
           fetch-depth: 0
 
-      - id: print_branch
+      - name: Verify current branch
         run: |
-          echo "${{ steps.pr_details.outputs.head.ref }}" >> $GITHUB_OUTPUT
+              echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+              echo "Current commit: $(git rev-parse HEAD)"
 
 
   end-to-end-tests:
