@@ -22,7 +22,6 @@ jobs:
         with:
           repository: ${{ steps.pr_details.outputs.repo }}
           ref: ${{ steps.pr_details.outputs.branch }}
-          fetch-depth: 0
 
       - name: Verify current branch
         run: |
