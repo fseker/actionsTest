@@ -20,12 +20,11 @@ jobs:
         with:
           repository: ${{ steps.pr_details.outputs.repo }}
           ref: ${{ steps.pr_details.outputs.head.ref }}
-          run: echo "${{ steps.pr_details.outputs.head.ref }}"
           fetch-depth: 0
 
       - id: print_branch
         run: |
-          echo "${{ steps.pr_details.outputs }}" >> $GITHUB_OUTPUT
+          echo "${{ steps.pr_details.outputs.head.ref }}" >> $GITHUB_OUTPUT
 
 
   end-to-end-tests:
