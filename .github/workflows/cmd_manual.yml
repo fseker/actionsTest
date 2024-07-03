@@ -9,6 +9,11 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
     steps:
 
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+            ref: refs/pull/${{ github.event.issue.number }}/head
+
       - name : end-to-end-tests
         uses: ./.github/workflows/e2e.yaml
         with:
