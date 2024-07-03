@@ -11,10 +11,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-            ref: refs/pull/${{ github.event.issue.number }}/head
+            ref: refs/pull/${{ github.event.issue.number }}/merge
 
   end-to-end-tests:
         needs: [prepare]
         uses: ./.github/workflows/e2e.yaml
         with:
-            ref: refs/pull/${{ github.event.issue.number }}/head
+            ref: refs/pull/${{ github.event.issue.number }}/merge
