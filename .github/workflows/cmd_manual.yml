@@ -25,7 +25,7 @@ jobs:
 
       - id: print_branch
         run: |
-          echo "${{ steps.pr_details.outputs.head.ref }}" >> $GITHUB_OUTPUT
+          echo "${{ steps.pr_details.outputs }}" >> $GITHUB_OUTPUT
 
 
   end-to-end-tests:
