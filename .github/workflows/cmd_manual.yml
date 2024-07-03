@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ steps.pr_details.outputs.repo }}
-          ref: ${{ steps.pr_details.outputs.branch }}
+          ref: ${{ steps.pr_details.outputs.head.ref }}
           fetch-depth: 0
 
 
