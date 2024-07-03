@@ -8,10 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
     steps:
-      - name: checkout
+      - name: Get PR details
+        id: pr_details
+        run: |
+          PR_DATA=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                         -H "Accept: application/vnd.github.v3+json" \
+                         https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+          echo "::set-output name=branch::$(echo $PR_DATA | jq -r .head.ref)"
+          echo "::set-output name=repo::$(echo $PR_DATA | jq -r .head.repo.full_name)"
+
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-            ref: refs/pull/${{ github.event.issue.number }}/merge
+          repository: ${{ steps.pr_details.outputs.repo }}
+          ref: ${{ steps.pr_details.outputs.branch }}
+          fetch-depth: 0
+
 
   end-to-end-tests:
         needs: [prepare]
