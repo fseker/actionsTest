@@ -19,3 +19,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
+      
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
