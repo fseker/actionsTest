@@ -20,6 +20,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
       
+      - name: print github ref
+        run: echo "${{ github.ref }}"
+       
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v8
