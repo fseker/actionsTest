@@ -20,8 +20,19 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
       
-      - name: print github ref
-        run: echo "${{ github.ref }}"
+      - name: Verify current branch
+        run: |
+          CURRENT_SHA=$(git rev-parse HEAD)
+          EXPECTED_SHA=$(git rev-parse ${{ inputs.ref }})
+          if [ "$CURRENT_SHA" = "$EXPECTED_SHA" ]; then
+            echo "✅ Successfully checked out ${{ inputs.ref }}"
+            echo "Current commit: $CURRENT_SHA"
+          else
+            echo "❌ Failed to checkout ${{ inputs.ref }}"
+            echo "Current commit: $CURRENT_SHA"
+            echo "Expected commit: $EXPECTED_SHA"
+            exit 1
+          fi
        
       - name: Get branch name
         id: branch-name
