@@ -7,6 +7,8 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
+    outputs:
+      branch: ${{ steps.set_branch.outputs.branch }}
     steps:
       - name: get pr details
         id: pr_details
@@ -16,6 +18,10 @@ jobs:
                        https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
           echo "branch=$(echo $PR_DATA | jq -r .head.ref)" >> $GITHUB_OUTPUT
           echo "repo=$(echo $PR_DATA | jq -r .head.repo.full_name)" >> $GITHUB_OUTPUT
+      
+      - name: Set branch output
+        id: set_branch
+        run: echo "branch=${{ steps.pr_details.outputs.branch }}" >> $GITHUB_OUTPUT
 
       - name: Checkout pr branch
         uses: actions/checkout@v4
