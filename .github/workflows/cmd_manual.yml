@@ -34,4 +34,4 @@ jobs:
     needs: [prepare]
     uses: ./.github/workflows/e2e.yaml
     with:
-      ref: refs/pull/${{ github.event.issue.number }}/merge
+      ref: ${{ steps.pr_details.outputs.branch }}
