@@ -9,6 +9,8 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/regression')
     outputs:
       branch: ${{ steps.set_branch.outputs.branch }}
+    outputs:
+      branch: ${{ steps.set_branch.outputs.branch }}
     steps:
       - name: get pr details
         id: pr_details
@@ -24,7 +26,27 @@ jobs:
         run: echo "branch=${{ steps.pr_details.outputs.branch }}" >> $GITHUB_OUTPUT
 
       - name: Checkout pr branch
+      - name: get pr details
+        id: pr_details
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+                  PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+                  echo "branch=$(echo $PR_DATA | jq -r .head.sha)" >> $GITHUB_OUTPUT
+                  echo "repo=$(echo $PR_DATA | jq -r .head.repo.full_name)" >> $GITHUB_OUTPUT
+      
+      - name: Set branch output
+        id: set_branch
+        run: echo "branch=${{ steps.pr_details.outputs.branch }}" >> $GITHUB_OUTPUT
+
+      - name: Checkout pr branch
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: ${{ steps.pr_details.outputs.repo }}
+          ref: ${{ steps.pr_details.outputs.branch }}
+
+      - name: Verify current branch
         with:
           fetch-depth: 0
           repository: ${{ steps.pr_details.outputs.repo }}
